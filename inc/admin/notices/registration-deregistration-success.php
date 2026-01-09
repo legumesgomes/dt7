@@ -10,7 +10,7 @@ class Registration_Deregistration_Success extends Abstract_Registration_Settings
 		?>
 
 		<p>
-			<?php esc_html_e( 'Purchase code successfully de-registered.', 'the7mk2' ); ?>
+			<?php esc_html_e( 'Activation code successfully deactivated.', 'the7mk2' ); ?>
 		</p>
 
 		<?php

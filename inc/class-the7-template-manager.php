@@ -12,7 +12,16 @@ defined( 'ABSPATH' ) || exit;
  */
 class The7_Template_Manager {
 
+	protected static $instance = null;
 	protected $templates_path;
+
+	public static function get_instance() {
+		if ( null === self::$instance ) {
+			self::$instance = new self();
+		}
+
+		return self::$instance;
+	}
 
 	public function __construct() {
 		$this->templates_path = array();

@@ -68,6 +68,64 @@ require_once PRESSCORE_DIR . '/deprecated-functions.php';
 require_once PRESSCORE_EXTENSIONS_DIR . '/core-functions.php';
 require_once PRESSCORE_EXTENSIONS_DIR . '/stylesheet-functions.php';
 
+if ( ! function_exists( 'the7_is_gutenberg_theme_mode_active' ) ) {
+	function the7_is_gutenberg_theme_mode_active() {
+		if ( class_exists( 'The7_Admin_Dashboard_Settings' ) ) {
+			return The7_Admin_Dashboard_Settings::get( 'settings-preset' ) === 'gutenberg';
+		}
+
+		return false;
+	}
+}
+
+if ( ! function_exists( 'the7_is_elementor_theme_mode_active' ) ) {
+	function the7_is_elementor_theme_mode_active() {
+		return false;
+	}
+}
+
+if ( ! function_exists( 'the7_is_woocommerce_enabled' ) ) {
+	function the7_is_woocommerce_enabled() {
+		return class_exists( 'WooCommerce' );
+	}
+}
+
+if ( ! function_exists( 'presscore_config' ) ) {
+	function presscore_config() {
+		return new Presscore_Config();
+	}
+}
+
+if ( ! function_exists( 'dt_the7_core_is_enabled' ) ) {
+	function dt_the7_core_is_enabled() {
+		return function_exists( 'The7PT' );
+	}
+}
+
+if ( ! function_exists( 'the7_is_elementor_buttons_integration_enabled' ) ) {
+	function the7_is_elementor_buttons_integration_enabled() {
+		return false;
+	}
+}
+
+if ( ! function_exists( 'the7_is_icons_manager_enabled' ) ) {
+	function the7_is_icons_manager_enabled() {
+		return false;
+	}
+}
+
+if ( ! function_exists( 'the7_elementor_is_active' ) ) {
+	function the7_elementor_is_active() {
+		return class_exists( 'Elementor\\Plugin' );
+	}
+}
+
+if ( ! function_exists( 'the7_fvm_is_active' ) ) {
+	function the7_fvm_is_active() {
+		return false;
+	}
+}
+
 if ( ! the7_is_gutenberg_theme_mode_active() ) {
 	require_once PRESSCORE_EXTENSIONS_DIR . '/dt-pagination.php';
 	require_once PRESSCORE_EXTENSIONS_DIR . '/less-vars/less-functions.php';
@@ -117,6 +175,7 @@ if ( is_admin() ) {
 		require_once locate_template( 'inc/admin/load-meta-boxes.php' );
 	}
 
+	require_once PRESSCORE_ADMIN_DIR . '/theme-activation.php';
 	require_once PRESSCORE_ADMIN_DIR . '/site-health/tests.php';
 	require_once PRESSCORE_ADMIN_DIR . '/site-health/info.php';
 

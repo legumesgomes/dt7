@@ -590,7 +590,9 @@ class The7_Install {
 			presscore_refresh_dynamic_css();
 		}
 
-		the7_elementor_flush_css_cache();
+		if ( function_exists( 'the7_elementor_flush_css_cache' ) ) {
+			the7_elementor_flush_css_cache();
+		}
 	}
 
 	/**

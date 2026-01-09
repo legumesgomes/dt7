@@ -25,7 +25,7 @@ if ( ! class_exists( 'Presscore_Modules_ThemeUpdateModule', false ) ) :
 			add_filter( 'upgrader_post_install', array( __CLASS__, 'restore_lang_files' ), 10, 3 );
 
 			add_action( 'admin_init', array( __CLASS__, 'register_settings' ) );
-			add_filter( 'pre_update_site_option_the7_purchase_code', array( __CLASS__, 'check_for_empty_code' ), 10, 2 );
+			add_filter( 'pre_update_site_option_theme_activation_code_option', array( __CLASS__, 'check_for_empty_code' ), 10, 2 );
 
 			if ( ! defined( 'THE7_IGNORE_THEME_DOWNLOAD_REQUIREMENTS' ) || ! THE7_IGNORE_THEME_DOWNLOAD_REQUIREMENTS ) {
 				add_filter(
@@ -59,7 +59,7 @@ if ( ! class_exists( 'Presscore_Modules_ThemeUpdateModule', false ) ) :
 		}
 
 		public static function register_settings() {
-			register_setting( 'the7_theme_registration', 'the7_purchase_code', array( __CLASS__, 'theme_activation_action' ) );
+			register_setting( 'the7_theme_registration', 'theme_activation_code_option', array( __CLASS__, 'theme_activation_action' ) );
 		}
 
 		/**
@@ -74,7 +74,7 @@ if ( ! class_exists( 'Presscore_Modules_ThemeUpdateModule', false ) ) :
 
 			if ( isset( $_POST['register_theme'] ) ) {
 				$code = self::register_action( $code );
-			} elseif ( $_POST['deregister_theme'] ) {
+				} elseif ( isset( $_POST['deregister_theme'] ) ) {
 				$code = self::de_register_action();
 			}
 			do_action( 'the7_theme_activation_action' );
@@ -94,17 +94,13 @@ if ( ! class_exists( 'Presscore_Modules_ThemeUpdateModule', false ) ) :
 				presscore_deactivate_theme();
 				self::check_for_empty_code();
 				return '';
+			}	if ( ! the7_activation_code_matches( $code ) ) {
+				presscore_deactivate_theme();
+				add_settings_error( 'the7_theme_registration', 'the7_invalid_activation_code', __( 'Activation code is not valid.', 'the7mk2' ) );
+				return $code;
 			}
 
-			$the7_remote_api = new The7_Remote_API( $code );
-
-			$the7_remote_api_response = $the7_remote_api->register_purchase_code();
-			if ( is_wp_error( $the7_remote_api_response ) ) {
-				add_settings_error( 'the7_theme_registration', 'the7_registration_error', $the7_remote_api_response->get_error_message() );
-				return '';
-			}
-
-			presscore_activate_theme();
+			presscore_activate_theme( $code );
 
 			// Refresh transients.
 			delete_site_transient( 'update_themes' );
@@ -114,21 +110,13 @@ if ( ! class_exists( 'Presscore_Modules_ThemeUpdateModule', false ) ) :
 				Presscore_Modules_TGMPAModule::delete_plugins_list_cache();
 			}
 
-			do_action( 'the7_after_theme_registration', $the7_remote_api_response );
+				do_action( 'the7_after_theme_registration', array( 'code' => $code ) );
 
 			return $code;
 		}
 
 		protected static function de_register_action() {
-			$code = presscore_get_purchase_code();
 
-			$the7_remote_api = new The7_Remote_API( $code );
-
-			$the7_remote_api_response = $the7_remote_api->de_register_purchase_code();
-			if ( is_wp_error( $the7_remote_api_response ) ) {
-				add_settings_error( 'the7_theme_registration', 'the7_registration_error', $the7_remote_api_response->get_error_message() );
-				return $code;
-			}
 
 			presscore_deactivate_theme();
 			add_settings_error( 'the7_theme_registration', 'the7_deregistration_success', 'none' );

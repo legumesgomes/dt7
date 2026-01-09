@@ -10,7 +10,7 @@ class Registration_Invalid_Purchase_Code extends Abstract_Registration_Settings_
 		?>
 
 		<p>
-			<?php esc_html_e( 'Purchase code is not valid.', 'the7mk2' ); ?>
+			<?php esc_html_e( 'Activation code is not valid.', 'the7mk2' ); ?>
 		</p>
 
 		<?php
@@ -21,6 +21,6 @@ class Registration_Invalid_Purchase_Code extends Abstract_Registration_Settings_
 	}
 
 	protected function get_error_codes() {
-		return [ 'the7_invalid_purchase_code' ];
+		return [ 'the7_invalid_activation_code', 'the7_invalid_purchase_code' ];
 	}
 }

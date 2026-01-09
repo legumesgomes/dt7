@@ -43,9 +43,7 @@ class The7_Theme_Auto_Deactivation {
 	 * @return bool
 	 */
 	public static function add_auto_deactivation_check( $r = false ) {
-		if ( ! has_filter( 'http_response', array( __CLASS__, 'http_response_filter' ) ) ) {
-			add_filter( 'http_response', array( __CLASS__, 'http_response_filter' ) );
-		}
+
 
 		return $r;
 	}
@@ -59,24 +57,7 @@ class The7_Theme_Auto_Deactivation {
 	 *                        A WP_Error instance upon error.
 	 */
 	public static function http_response_filter( $response ) {
-		static $verifying_code = null;
 
-		if ( ! $verifying_code && $response['response']['code'] === 403 && presscore_theme_is_activated() ) {
-			$the7_remote_api = new The7_Remote_API( presscore_get_purchase_code() );
-			$response_url = $response['http_response']->get_response_object()->url;
-
-			// Prevent recursion.
-			$verifying_code = true;
-			if ( $the7_remote_api->is_api_url( $response_url ) && ! $the7_remote_api->verify_code() ) {
-				the7_admin_notices()->reset( 'the7_auto_deactivation' );
-				add_site_option( 'the7_auto_deactivated', true );
-				presscore_deactivate_theme();
-				presscore_delete_purchase_code();
-
-				return new WP_Error( 'the7_auto_deactivated', __( 'Access denied. Theme was remotely de-registered.', 'the7mk2' ) );
-			}
-			$verifying_code = null;
-		}
 
 		return $response;
 	}

@@ -33,6 +33,10 @@ defined( 'ABSPATH' ) || exit;
  * @return void
  */
 function the7_add_admin_notices() {
+	if ( ! function_exists( 'the7_admin_notices' ) ) {
+		return;
+	}
+
 	the7_admin_notices()->add_object( new Registration() );
 	the7_admin_notices()->add_object( new Registration_Soft_Warning() );
 	the7_admin_notices()->add_object( new Theme_Auto_Deactivation() );
@@ -62,6 +66,10 @@ add_action( 'admin_notices', 'the7_add_admin_notices' );
  * Enqueue admin notices scripts.
  */
 function the7_admin_notices_scripts() {
+	if ( ! function_exists( 'the7_admin_notices' ) ) {
+		return;
+	}
+
 	the7_register_script( 'the7-admin-notices', PRESSCORE_ADMIN_URI . '/assets/js/admin-notices', array( 'jquery' ), false, true );
 
 	wp_enqueue_script( 'the7-admin-notices' );
@@ -72,6 +80,10 @@ function the7_admin_notices_scripts() {
  * Main function to handle custom admin notices. Adds action handlers.
  */
 function the7_admin_notices_bootstrap() {
+	if ( ! function_exists( 'the7_admin_notices' ) ) {
+		return;
+	}
+
 	$notices = the7_admin_notices();
 
 	add_action( 'admin_enqueue_scripts', 'the7_admin_notices_scripts', 9999 );

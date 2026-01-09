@@ -68,7 +68,7 @@ abstract class Abstract_Bundled_Plugin {
 			return false;
 		}
 
-		$theme_code = get_site_option( 'the7_purchase_code', '' );
+		$theme_code = presscore_get_purchase_code();
 		if ( empty( $theme_code ) ) {
 			return true;
 		}

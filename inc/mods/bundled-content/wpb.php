@@ -62,6 +62,10 @@ class WPB extends Abstract_Bundled_Plugin {
 	 * @return bool
 	 */
 	public function is_active() {
+		if ( ! function_exists( 'the7_wpb_is_active' ) ) {
+			return false;
+		}
+
 		return the7_wpb_is_active();
 	}
 
